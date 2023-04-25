@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background-color: #232323;
+  display: flex;
+  justify-content: center;
+  padding-top: 70px;
+  caret-color: #f26006;
+}
+
+.keyboard {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid #000;
+  border-radius: 18px;
+  width: 1200px;
+  padding: 15px;
+  background-color: #ffffff;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.keyboard__row {
+  margin-bottom: 15px;
+}
+
+.keyboard__list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.keyboard__row:last-child .keyboard__list {
+  justify-content: center;
+  gap: 15px;
+  width: 1100px;
+}
+
+.key {
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  padding: 8px 15px;
+  background: linear-gradient(180deg, #282828, #202020);
+  box-shadow: inset -8px 0 8px rgba(0, 0, 0, 0.15),
+    inset 0 -8px 8px rgba(0, 0, 0, 0.25),
+    0 0 0 2px rgba(0, 0, 0, 0.75),
+    10px 20px 25px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  z-index: 2;
+}
+
+.key::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  bottom: 14px;
+  right: 12px;
+  background: linear-gradient(90deg, #232323, #4a4a4a);
+  border-radius: 10px;
+  box-shadow: -10px -10px 10px rgba(255, 255, 255, 0.25), 10px 5px 10px rgba(0, 0, 0, 0.15);
+  border-left: 1px solid #0004;
+  border-bottom: 1px solid #0004;
+  border-top: 1px solid #0009;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.key i {
+  position: relative;
+  color: #fff;
+  font-size: 1.2rem;
+  font-style: normal;
+  z-index: 2;
+}
+
+/* .active::before, */
+.active {
+  box-shadow: 0px 0px 20px rgb(242, 96, 6),
+    0px 0px 15px rgb(248, 128, 54),
+    0px 0px 17px rgb(245, 244, 244);
+  transform: scale(0.98);
+}
+
+.active i {
+  color: #f26006;
+}
+
+
+.key-tab {
+  flex-basis: 120px;
+}
+
+.key-caps,
+.key-enter,
+.key-shift,
+.key-backspace {
+  flex-basis: 140px;
+}
+
+.key-ctrl,
+.key-win,
+.key-alt {
+  width: 85px;
+  height: 70px;
+}
+
+.key-space {
+  flex-basis: 500px;
+}
+
+/*textarea*/
+.textarea {
+  background-color: #ddd;
+  color: #666;
+  padding: 1em;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  outline: none;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  font-size: 2em;
+  line-height: 1.4;
+  width: 80%;
+  height: 400px;
+  resize: none;
+}
