@@ -11,5 +11,9 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'max-classes-per-file': [
+      'error',
+      { ignoreExpressions: true, max: 10 },
+    ],
   },
 };
