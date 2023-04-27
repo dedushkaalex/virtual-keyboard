@@ -3,6 +3,7 @@ class KeyButton {
     this.symbol = symbol;
     this.keyCode = keyCode;
     this.isPressed = false;
+    this.audioStandartKey = new Audio('./assets/audio/key.wav');
     this.element = this.createKey();
     this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
     this.element.addEventListener('mouseup', this.handleMouseUp.bind(this));
@@ -30,6 +31,7 @@ class KeyButton {
   handleMouseDown() {
     this.isPressed = true;
     this.element.classList.add('active');
+    this.audioStandartKey.play();
   }
 
   handleMouseUp() {
@@ -41,34 +43,68 @@ class KeyButton {
 class KeyLayout {
   constructor(keyObj) {
     this.arrayKeys = keyObj;
-    this.render();
-  }
-
-  render() {
-    const keyboard = document.createElement('div');
-    keyboard.classList.add('keyboard');
-    document.body.prepend(keyboard);
-    const rowOne = this.arrayKeys.slice(0, 14);
-    const rowTwo = this.arrayKeys.slice(14, 29);
-    const rowThree = this.arrayKeys.slice(29, 42);
-    const rowFour = this.arrayKeys.slice(42, 55);
-    const rowFive = this.arrayKeys.slice(55, 64);
-    keyboard.insertAdjacentElement('beforeend', this.renderRow(rowOne));
-    keyboard.insertAdjacentElement('beforeend', this.renderRow(rowTwo));
-    keyboard.insertAdjacentElement('beforeend', this.renderRow(rowThree));
-    keyboard.insertAdjacentElement('beforeend', this.renderRow(rowFour));
-    keyboard.insertAdjacentElement('beforeend', this.renderRow(rowFive));
   }
 
   // eslint-disable-next-line class-methods-use-this
-  renderRow(row) {
+  renderRow() {
     const keyboardRow = document.createElement('div');
     keyboardRow.className = 'keyboard__row';
     const keyboardList = document.createElement('div');
     keyboardList.className = 'keyboard__list';
     keyboardRow.append(keyboardList);
-    row.map((objKey) => keyboardList.append(new KeyButton(objKey.name, objKey.code).element));
+    this.arrayKeys
+      .map((objKey) => keyboardList.append(new KeyButton(objKey.name, objKey.code).element));
     return keyboardRow;
+  }
+}
+class Keyboard {
+  constructor(keyObj) {
+    this.arrayKeys = keyObj;
+    this.properties = {
+      isCapsLock: false,
+      isShift: false,
+      isTab: false,
+      audioStandartKey: new Audio('./assets/audio/key.wav'),
+      language: null,
+    };
+    window.addEventListener('keydown', this.handleKeyDown.bind(this));
+    window.addEventListener('keyup', this.handleKeyUp.bind(this));
+    this.virtualKeys = null;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  render() {
+    const keyboard = document.createElement('div');
+    keyboard.classList.add('keyboard');
+    document.body.prepend(keyboard);
+    const row1 = new KeyLayout(this.arrayKeys.slice(0, 14)).renderRow();
+    const row2 = new KeyLayout(this.arrayKeys.slice(14, 29)).renderRow();
+    const row3 = new KeyLayout(this.arrayKeys.slice(29, 42)).renderRow();
+    const row4 = new KeyLayout(this.arrayKeys.slice(42, 55)).renderRow();
+    const row5 = new KeyLayout(this.arrayKeys.slice(55, 64)).renderRow();
+    keyboard.append(row1);
+    keyboard.append(row2);
+    keyboard.append(row3);
+    keyboard.append(row4);
+    keyboard.append(row5);
+    this.virtualKeys = document.querySelectorAll('.key');
+  }
+
+  handleKeyDown(e) {
+    this.properties.audioStandartKey.play();
+    const keyCode = e.code;
+    const virtualKey = Array.from(this.virtualKeys).find((key) => key.dataset.keyCode === keyCode);
+    if (virtualKey) {
+      virtualKey.classList.add('active');
+    }
+  }
+
+  handleKeyUp(e) {
+    const keyCode = e.code;
+    const virtualKey = Array.from(this.virtualKeys).find((key) => key.dataset.keyCode === keyCode);
+    if (virtualKey) {
+      virtualKey.classList.remove('active');
+    }
   }
 }
 
@@ -100,11 +136,12 @@ const keyObj = [
 
   { code: 'ControlLeft', name: 'ctrl' }, { code: 'MetaLeft', name: 'win' }, { code: 'AltLeft', name: 'alt' },
   { code: 'Space', name: 'space' }, { code: 'AltRight', name: 'alt' },
-  { code: 'ArrowLeft', name: '◄' }, { code: 'ArrowDown', name: '▼' }, { code: 'ArrowRight', name: '►' } // 8
+  { code: 'ArrowLeft', name: '◄' }, { code: 'ArrowDown', name: '▼' }, { code: 'ArrowRight', name: '►' }, // 8
 ];
-// class Keyboard {
-//   constructor() {
 
-//   }
-// }
-new KeyLayout(keyObj);
+const textarea = document.createElement('textarea');
+textarea.className = 'textarea';
+textarea.placeholder = 'Enter a message...';
+document.body.prepend(textarea);
+const keyboard = new Keyboard(keyObj);
+keyboard.render();
