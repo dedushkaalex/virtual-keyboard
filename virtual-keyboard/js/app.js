@@ -79,7 +79,6 @@ class Keyboard {
     this.textarea = document.querySelector('.textarea');
   }
 
-  // eslint-disable-next-line class-methods-use-this
   render() {
     const keyboard = document.createElement('div');
     keyboard.classList.add('keyboard');
@@ -106,6 +105,10 @@ class Keyboard {
     if (virtualKey) {
       virtualKey.classList.add('active');
       this.textarea.focus();
+      if (keyCode === 'CapsLock') {
+        this.$toggleCapsLock();
+        this.$toggleCapsLockText(this.virtualKeys);
+      }
     }
   }
 
@@ -124,7 +127,7 @@ class Keyboard {
         switch (key.dataset.keyCode) {
           case 'Backspace':
             key.classList.add('active');
-            this.textarea.value = this.textarea.value.substring(0, this.textarea.value.length - 1);
+            Keyboard.$removeTextBackSpace(this.textarea);
             this.textarea.focus();
             break;
           case 'Tab':
@@ -134,34 +137,34 @@ class Keyboard {
             break;
           case 'Space':
             key.classList.add('active');
-            this.textarea.value += ' ';
+            Keyboard.$getCurrentPositionCaret(this.textarea, ' ');
             this.textarea.focus();
             break;
           case 'CapsLock':
-            this.properties.isCapsLock = !this.properties.isCapsLock;
+            this.$toggleCapsLock();
             key.classList.add('active');
-            if (this.properties.isCapsLock) {
-              this.virtualKeys.forEach((item) => {
-                const elem = item;
-                elem.firstChild.textContent = item.firstChild.textContent.toUpperCase();
-              });
-              this.textarea.focus();
-            } else {
-              this.virtualKeys.forEach((item) => {
-                const elem = item;
-                elem.firstChild.textContent = item.firstChild.textContent.toLowerCase();
-              });
-              this.textarea.focus();
-              key.classList.remove('active');
-            }
+            this.$toggleCapsLockText(this.virtualKeys);
+            this.textarea.focus();
             break;
-            // case 'Enter':
-            //   key.classList.add('active');
+          case 'Enter':
+            key.classList.add('active');
 
-            //   this.textarea.value += '\n';
-            //   this.textarea.focus();
+            this.textarea.value += '\n';
+            this.textarea.focus();
 
-          //   break;
+            break;
+          case 'ArrowLeft':
+            Keyboard.$movePositionCaretByArrowButtons(this.textarea, 'ArrowLeft');
+            break;
+          case 'ArrowRight':
+            Keyboard.$movePositionCaretByArrowButtons(this.textarea, 'ArrowRight');
+            break;
+          case 'ArrowUp':
+            Keyboard.$movePositionCaretByArrowButtons(this.textarea, 'ArrowUp');
+            break;
+          case 'ArrowDown':
+            Keyboard.$movePositionCaretByArrowButtons(this.textarea, 'ArrowDown');
+            break;
           // case 'ShiftLeft':
           //   key.classList.add('active');
           //   Array.from(this.elements.keys).map((i) => {
@@ -176,7 +179,8 @@ class Keyboard {
           // break;
           default:
             key.classList.add('active');
-            this.textarea.value += key.textContent;
+            Keyboard.$getCurrentPositionCaret(this.textarea, key.textContent);
+            // this.textarea.value += key.textContent;
             break;
         }
       }
@@ -184,9 +188,52 @@ class Keyboard {
     this.virtualKeyboard.addEventListener('mouseup', () => this.textarea.focus());
   }
 
-  handleFunctionalKey(keyCode) {
-    if (keyCode === 'Backspace') {
-      this.textarea.value -= this.textarea.value.substring(0, this.textarea.value.length - 1) - 1;
+  $toggleCapsLock() {
+    this.properties.isCapsLock = !this.properties.isCapsLock;
+  }
+
+  $toggleCapsLockText(keysSelector) {
+    keysSelector.forEach((key) => {
+      const elem = key;
+      if (this.properties.isCapsLock) {
+        elem.firstElementChild.textContent = key.firstElementChild.textContent.toUpperCase();
+      } else {
+        elem.firstElementChild.textContent = key.firstElementChild.textContent.toLowerCase();
+      }
+    });
+  }
+
+  static $removeTextBackSpace(textareaSelector) {
+    const currentPosCaret = textareaSelector.selectionStart;
+    const endCaret = currentPosCaret;
+    if (endCaret >= 1) {
+      textareaSelector.setRangeText('', endCaret - 1, currentPosCaret, 'end');
+    }
+  }
+
+  static $getCurrentPositionCaret(textareaSelector, value) {
+    const currentPosCaret = textareaSelector.selectionStart;
+    const endCaret = currentPosCaret;
+    textareaSelector.setRangeText(`${value}`, currentPosCaret, endCaret, 'end');
+  }
+
+  static $movePositionCaretByArrowButtons(textareaSelector, keyCode) {
+    const textarea = textareaSelector;
+    if (keyCode === 'ArrowLeft') {
+      textarea.selectionStart -= 1;
+      textarea.selectionEnd = textarea.selectionStart;
+    } else if (keyCode === 'ArrowRight') {
+      textarea.selectionStart += 1;
+      textarea.selectionEnd = textarea.selectionStart;
+    } else if (keyCode === 'ArrowUp') {
+      // 104 - количество текста, которое может влезть в строку
+      const absRow = Math.abs(textarea.selectionStart - 104);
+      textarea.selectionStart = absRow;
+      textarea.selectionEnd = textarea.selectionStart;
+    } else if (keyCode === 'ArrowDown') {
+      const absRow = Math.abs(textarea.selectionStart + 104);
+      textarea.selectionStart = absRow;
+      textarea.selectionEnd = textarea.selectionStart;
     }
   }
 }
