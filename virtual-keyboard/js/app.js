@@ -7,9 +7,9 @@ class KeyButton {
     this.element = this.createKey();
     this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
     this.element.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    this.element.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
   }
 
-  // eslint-disable-next-line class-methods-use-this
   createKey() {
     const keyElement = document.createElement('span');
     keyElement.classList.add('key');
@@ -35,6 +35,11 @@ class KeyButton {
   }
 
   handleMouseUp() {
+    this.isPressed = false;
+    this.element.classList.remove('active');
+  }
+
+  handleMouseLeave() {
     this.isPressed = false;
     this.element.classList.remove('active');
   }
@@ -70,6 +75,8 @@ class Keyboard {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
     window.addEventListener('keyup', this.handleKeyUp.bind(this));
     this.virtualKeys = null;
+    this.virtualKeyboard = null;
+    this.textarea = document.querySelector('.textarea');
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -88,6 +95,8 @@ class Keyboard {
     keyboard.append(row4);
     keyboard.append(row5);
     this.virtualKeys = document.querySelectorAll('.key');
+    this.virtualKeyboard = document.querySelector('.keyboard');
+    this.handleVirtualMouseDown();
   }
 
   handleKeyDown(e) {
@@ -96,6 +105,7 @@ class Keyboard {
     const virtualKey = Array.from(this.virtualKeys).find((key) => key.dataset.keyCode === keyCode);
     if (virtualKey) {
       virtualKey.classList.add('active');
+      this.textarea.focus();
     }
   }
 
@@ -106,9 +116,82 @@ class Keyboard {
       virtualKey.classList.remove('active');
     }
   }
+
+  handleVirtualMouseDown() {
+    this.virtualKeyboard.addEventListener('mousedown', (e) => {
+      const key = e.target.closest('.key');
+      if (key) {
+        switch (key.dataset.keyCode) {
+          case 'Backspace':
+            key.classList.add('active');
+            this.textarea.value = this.textarea.value.substring(0, this.textarea.value.length - 1);
+            this.textarea.focus();
+            break;
+          case 'Tab':
+            key.classList.add('active');
+            this.textarea.value += '    ';
+            this.textarea.focus();
+            break;
+          case 'Space':
+            key.classList.add('active');
+            this.textarea.value += ' ';
+            this.textarea.focus();
+            break;
+          case 'CapsLock':
+            this.properties.isCapsLock = !this.properties.isCapsLock;
+            key.classList.add('active');
+            if (this.properties.isCapsLock) {
+              this.virtualKeys.forEach((item) => {
+                const elem = item;
+                elem.firstChild.textContent = item.firstChild.textContent.toUpperCase();
+              });
+              this.textarea.focus();
+            } else {
+              this.virtualKeys.forEach((item) => {
+                const elem = item;
+                elem.firstChild.textContent = item.firstChild.textContent.toLowerCase();
+              });
+              this.textarea.focus();
+              key.classList.remove('active');
+            }
+            break;
+            // case 'Enter':
+            //   key.classList.add('active');
+
+            //   this.textarea.value += '\n';
+            //   this.textarea.focus();
+
+          //   break;
+          // case 'ShiftLeft':
+          //   key.classList.add('active');
+          //   Array.from(this.elements.keys).map((i) => {
+          //     i.firstElementChild.textContent = i.firstElementChild.textContent.toUpperCase();
+          //   });
+          //   break;
+          // case 'ShiftRight':
+          // key.classList.add('active');
+          // Array.from(this.elements.keys).map((i) => {
+          //   i.firstElementChild.textContent = i.firstElementChild.textContent.toUpperCase();
+          // });
+          // break;
+          default:
+            key.classList.add('active');
+            this.textarea.value += key.textContent;
+            break;
+        }
+      }
+    });
+    this.virtualKeyboard.addEventListener('mouseup', () => this.textarea.focus());
+  }
+
+  handleFunctionalKey(keyCode) {
+    if (keyCode === 'Backspace') {
+      this.textarea.value -= this.textarea.value.substring(0, this.textarea.value.length - 1) - 1;
+    }
+  }
 }
 
-const keyObj = [
+const keyEn = [
   { code: 'Backquote', name: '`' }, { code: 'Digit1', name: '1' }, { code: 'Digit2', name: '2' },
   { code: 'Digit3', name: '3' }, { code: 'Digit4', name: '4' }, { code: 'Digit5', name: '5' },
   { code: 'Digit6', name: '6' }, { code: 'Digit7', name: '7' }, { code: 'Digit8', name: '8' },
@@ -139,9 +222,41 @@ const keyObj = [
   { code: 'ArrowLeft', name: '◄' }, { code: 'ArrowDown', name: '▼' }, { code: 'ArrowRight', name: '►' }, // 8
 ];
 
+const keyRu = [
+  { code: 'Backquote', name: 'ё' }, { code: 'Digit1', name: '1' }, { code: 'Digit2', name: '2' },
+  { code: 'Digit3', name: '3' }, { code: 'Digit4', name: '4' }, { code: 'Digit5', name: '5' },
+  { code: 'Digit6', name: '6' }, { code: 'Digit7', name: '7' }, { code: 'Digit8', name: '8' },
+  { code: 'Digit9', name: '9' }, { code: 'Digit0', name: '0' }, { code: 'Minus', name: '-' },
+  { code: 'Equal', name: '=' }, { code: 'Backspace', name: 'backspace' }, // 14
+
+  { code: 'Tab', name: 'tab' }, { code: 'KeyQ', name: 'й' }, { code: 'KeyW', name: 'ц' },
+  { code: 'KeyE', name: 'у' }, { code: 'KeyR', name: 'к' }, { code: 'KeyT', name: 'е' },
+  { code: 'KeyY', name: 'н' }, { code: 'KeyU', name: 'г' }, { code: 'KeyI', name: 'ш' },
+  { code: 'KeyO', name: 'щ' }, { code: 'KeyP', name: 'з' }, { code: 'BracketLeft', name: 'х' },
+  { code: 'BracketRight', name: 'ъ' }, { code: 'Backslash', name: '\\' },
+  { code: 'Delete', name: 'del' }, // 14
+
+  { code: 'CapsLock', name: 'caps' }, { code: 'KeyA', name: 'ф' }, { code: 'KeyS', name: 'ы' },
+  { code: 'KeyD', name: 'в' }, { code: 'KeyF', name: 'а' }, { code: 'KeyG', name: 'п' },
+  { code: 'KeyH', name: 'р' }, { code: 'KeyJ', name: 'о' }, { code: 'KeyK', name: 'л' },
+  { code: 'KeyL', name: 'д' }, { code: 'Semicolon', name: 'ж' }, { code: 'Quote', name: 'э' },
+  { code: 'Enter', name: 'enter' }, // 13
+
+  { code: 'ShiftLeft', name: 'shift' }, { code: 'KeyZ', name: 'я' }, { code: 'KeyX', name: 'ч' },
+  { code: 'KeyC', name: 'с' }, { code: 'KeyV', name: 'м' }, { code: 'KeyB', name: 'и' },
+  { code: 'KeyN', name: 'т' }, { code: 'KeyM', name: 'ь' }, { code: 'Comma', name: 'б' },
+  { code: 'Period', name: 'ю' }, { code: 'Slash', name: '.' }, { code: 'ArrowUp', name: '▲' },
+  { code: 'ShiftRight', name: 'shift' }, // 12
+
+  { code: 'ControlLeft', name: 'ctrl' }, { code: 'MetaLeft', name: 'win' }, { code: 'AltLeft', name: 'alt' },
+  { code: 'Space', name: 'space' }, { code: 'AltRight', name: 'alt' },
+  { code: 'ArrowLeft', name: '◄' }, { code: 'ArrowDown', name: '▼' }, { code: 'ArrowRight', name: '►' }, // 8
+];
+
 const textarea = document.createElement('textarea');
 textarea.className = 'textarea';
 textarea.placeholder = 'Enter a message...';
 document.body.prepend(textarea);
-const keyboard = new Keyboard(keyObj);
+
+const keyboard = new Keyboard(keyRu);
 keyboard.render();
