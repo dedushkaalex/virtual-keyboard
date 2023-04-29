@@ -62,16 +62,99 @@ class KeyLayout {
     return keyboardRow;
   }
 }
+class Storage {
+  constructor() {
+    this.isEnglish = true;
+    this.objLng = {
+      en: [
+        { code: 'Backquote', name: '`' }, { code: 'Digit1', name: '1' }, { code: 'Digit2', name: '2' },
+        { code: 'Digit3', name: '3' }, { code: 'Digit4', name: '4' }, { code: 'Digit5', name: '5' },
+        { code: 'Digit6', name: '6' }, { code: 'Digit7', name: '7' }, { code: 'Digit8', name: '8' },
+        { code: 'Digit9', name: '9' }, { code: 'Digit0', name: '0' }, { code: 'Minus', name: '-' },
+        { code: 'Equal', name: '=' }, { code: 'Backspace', name: 'backspace' }, // 14
+
+        { code: 'Tab', name: 'tab' }, { code: 'KeyQ', name: 'q' }, { code: 'KeyW', name: 'w' },
+        { code: 'KeyE', name: 'e' }, { code: 'KeyR', name: 'r' }, { code: 'KeyT', name: 't' },
+        { code: 'KeyY', name: 'y' }, { code: 'KeyU', name: 'u' }, { code: 'KeyI', name: 'i' },
+        { code: 'KeyO', name: 'o' }, { code: 'KeyP', name: 'p' }, { code: 'BracketLeft', name: '[' },
+        { code: 'BracketRight', name: ']' }, { code: 'Backslash', name: '\\' },
+        { code: 'Delete', name: 'del' }, // 14
+
+        { code: 'CapsLock', name: 'caps' }, { code: 'KeyA', name: 'a' }, { code: 'KeyS', name: 's' },
+        { code: 'KeyD', name: 'd' }, { code: 'KeyF', name: 'f' }, { code: 'KeyG', name: 'g' },
+        { code: 'KeyH', name: 'h' }, { code: 'KeyJ', name: 'j' }, { code: 'KeyK', name: 'k' },
+        { code: 'KeyL', name: 'l' }, { code: 'Semicolon', name: ';' }, { code: 'Quote', name: '\'' },
+        { code: 'Enter', name: 'enter' }, // 13
+
+        { code: 'ShiftLeft', name: 'shift' }, { code: 'KeyZ', name: 'z' }, { code: 'KeyX', name: 'x' },
+        { code: 'KeyC', name: 'c' }, { code: 'KeyV', name: 'v' }, { code: 'KeyB', name: 'b' },
+        { code: 'KeyN', name: 'n' }, { code: 'KeyM', name: 'm' }, { code: 'Comma', name: ',' },
+        { code: 'Period', name: '.' }, { code: 'Slash', name: '/' }, { code: 'ArrowUp', name: '▲' },
+        { code: 'ShiftRight', name: 'shift' }, // 12
+
+        { code: 'ControlLeft', name: 'ctrl' }, { code: 'MetaLeft', name: 'win' }, { code: 'AltLeft', name: 'alt' },
+        { code: 'Space', name: 'space' }, { code: 'AltRight', name: 'alt' },
+        { code: 'ArrowLeft', name: '◄' }, { code: 'ArrowDown', name: '▼' }, { code: 'ArrowRight', name: '►' }, // 8
+      ],
+      ru: [
+        { code: 'Backquote', name: 'ё' }, { code: 'Digit1', name: '1' }, { code: 'Digit2', name: '2' },
+        { code: 'Digit3', name: '3' }, { code: 'Digit4', name: '4' }, { code: 'Digit5', name: '5' },
+        { code: 'Digit6', name: '6' }, { code: 'Digit7', name: '7' }, { code: 'Digit8', name: '8' },
+        { code: 'Digit9', name: '9' }, { code: 'Digit0', name: '0' }, { code: 'Minus', name: '-' },
+        { code: 'Equal', name: '=' }, { code: 'Backspace', name: 'backspace' }, // 14
+
+        { code: 'Tab', name: 'tab' }, { code: 'KeyQ', name: 'й' }, { code: 'KeyW', name: 'ц' },
+        { code: 'KeyE', name: 'у' }, { code: 'KeyR', name: 'к' }, { code: 'KeyT', name: 'е' },
+        { code: 'KeyY', name: 'н' }, { code: 'KeyU', name: 'г' }, { code: 'KeyI', name: 'ш' },
+        { code: 'KeyO', name: 'щ' }, { code: 'KeyP', name: 'з' }, { code: 'BracketLeft', name: 'х' },
+        { code: 'BracketRight', name: 'ъ' }, { code: 'Backslash', name: '\\' },
+        { code: 'Delete', name: 'del' }, // 14
+
+        { code: 'CapsLock', name: 'caps' }, { code: 'KeyA', name: 'ф' }, { code: 'KeyS', name: 'ы' },
+        { code: 'KeyD', name: 'в' }, { code: 'KeyF', name: 'а' }, { code: 'KeyG', name: 'п' },
+        { code: 'KeyH', name: 'р' }, { code: 'KeyJ', name: 'о' }, { code: 'KeyK', name: 'л' },
+        { code: 'KeyL', name: 'д' }, { code: 'Semicolon', name: 'ж' }, { code: 'Quote', name: 'э' },
+        { code: 'Enter', name: 'enter' }, // 13
+
+        { code: 'ShiftLeft', name: 'shift' }, { code: 'KeyZ', name: 'я' }, { code: 'KeyX', name: 'ч' },
+        { code: 'KeyC', name: 'с' }, { code: 'KeyV', name: 'м' }, { code: 'KeyB', name: 'и' },
+        { code: 'KeyN', name: 'т' }, { code: 'KeyM', name: 'ь' }, { code: 'Comma', name: 'б' },
+        { code: 'Period', name: 'ю' }, { code: 'Slash', name: '.' }, { code: 'ArrowUp', name: '▲' },
+        { code: 'ShiftRight', name: 'shift' }, // 12
+
+        { code: 'ControlLeft', name: 'ctrl' }, { code: 'MetaLeft', name: 'win' }, { code: 'AltLeft', name: 'alt' },
+        { code: 'Space', name: 'space' }, { code: 'AltRight', name: 'alt' },
+        { code: 'ArrowLeft', name: '◄' }, { code: 'ArrowDown', name: '▼' }, { code: 'ArrowRight', name: '►' }, // 8
+      ],
+    };
+  }
+
+  setStorage(key, value) {
+    return localStorage.setItem(key, value);
+  }
+
+  getStorage(key) {
+    if (!localStorage.getItem(key)) {
+      this.setStorage('language', 'en');
+    }
+    return localStorage.getItem(key);
+  }
+}
+
 class Keyboard {
-  constructor(keyObj) {
-    this.arrayKeys = keyObj;
+  constructor() {
+    this.storage = new Storage();
+    this.language = this.storage.getStorage('language');
+    this.arrayKeys = this.storage.objLng[this.language];
     this.properties = {
       isCapsLock: false,
       isShift: false,
       isTab: false,
       audioStandartKey: new Audio('./assets/audio/key.wav'),
-      language: null,
     };
+    this.functionalsKey = ['Backspace', 'Tab', 'Space', 'Enter', 'CapsLock',
+      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'ShiftLeft', 'ShiftRight',
+      'ControlLeft', 'MetaLeft', 'AltLeft', 'AltRight'];
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
     window.addEventListener('keyup', this.handleKeyUp.bind(this));
     this.virtualKeys = null;
@@ -103,6 +186,10 @@ class Keyboard {
     const keyCode = e.code;
     const virtualKey = Array.from(this.virtualKeys).find((key) => key.dataset.keyCode === keyCode);
     if (virtualKey) {
+      if (!this.functionalsKey.includes(virtualKey.dataset.keyCode)) {
+        e.preventDefault();
+        Keyboard.$getCurrentPositionCaret(this.textarea, virtualKey.firstElementChild.textContent);
+      }
       virtualKey.classList.add('active');
       this.textarea.focus();
       if (keyCode === 'CapsLock') {
@@ -110,6 +197,7 @@ class Keyboard {
         this.$toggleCapsLockText(this.virtualKeys);
       }
     }
+    this.$changeLanguage(e);
   }
 
   handleKeyUp(e) {
@@ -148,10 +236,8 @@ class Keyboard {
             break;
           case 'Enter':
             key.classList.add('active');
-
-            this.textarea.value += '\n';
+            Keyboard.$getCurrentPositionCaret(this.textarea, '\n');
             this.textarea.focus();
-
             break;
           case 'ArrowLeft':
             Keyboard.$movePositionCaretByArrowButtons(this.textarea, 'ArrowLeft');
@@ -164,6 +250,9 @@ class Keyboard {
             break;
           case 'ArrowDown':
             Keyboard.$movePositionCaretByArrowButtons(this.textarea, 'ArrowDown');
+            break;
+          case 'Delete':
+            Keyboard.$removeTextDelete(this.textarea);
             break;
           // case 'ShiftLeft':
           //   key.classList.add('active');
@@ -188,6 +277,20 @@ class Keyboard {
     this.virtualKeyboard.addEventListener('mouseup', () => this.textarea.focus());
   }
 
+  $changeLanguage(e) {
+    if (e.ctrlKey && e.altKey) {
+      if (localStorage.getItem('language') === 'en') {
+        this.storage.setStorage('language', 'ru');
+      } else {
+        this.storage.setStorage('language', 'en');
+      }
+      this.arrayKeys = this.storage.objLng[localStorage.getItem('language')];
+      this.virtualKeyboard.remove();
+      this.keyboard.render();
+    }
+    return localStorage.getItem('language');
+  }
+
   $toggleCapsLock() {
     this.properties.isCapsLock = !this.properties.isCapsLock;
   }
@@ -209,6 +312,12 @@ class Keyboard {
     if (endCaret >= 1) {
       textareaSelector.setRangeText('', endCaret - 1, currentPosCaret, 'end');
     }
+  }
+
+  static $removeTextDelete(textareaSelector) {
+    const currentPosCaret = textareaSelector.selectionStart;
+    const endCaret = currentPosCaret;
+    textareaSelector.setRangeText('', endCaret, currentPosCaret + 1, 'end');
   }
 
   static $getCurrentPositionCaret(textareaSelector, value) {
@@ -238,72 +347,11 @@ class Keyboard {
   }
 }
 
-const keyEn = [
-  { code: 'Backquote', name: '`' }, { code: 'Digit1', name: '1' }, { code: 'Digit2', name: '2' },
-  { code: 'Digit3', name: '3' }, { code: 'Digit4', name: '4' }, { code: 'Digit5', name: '5' },
-  { code: 'Digit6', name: '6' }, { code: 'Digit7', name: '7' }, { code: 'Digit8', name: '8' },
-  { code: 'Digit9', name: '9' }, { code: 'Digit0', name: '0' }, { code: 'Minus', name: '-' },
-  { code: 'Equal', name: '=' }, { code: 'Backspace', name: 'backspace' }, // 14
-
-  { code: 'Tab', name: 'tab' }, { code: 'KeyQ', name: 'q' }, { code: 'KeyW', name: 'w' },
-  { code: 'KeyE', name: 'e' }, { code: 'KeyR', name: 'r' }, { code: 'KeyT', name: 't' },
-  { code: 'KeyY', name: 'y' }, { code: 'KeyU', name: 'u' }, { code: 'KeyI', name: 'i' },
-  { code: 'KeyO', name: 'o' }, { code: 'KeyP', name: 'p' }, { code: 'BracketLeft', name: '[' },
-  { code: 'BracketRight', name: ']' }, { code: 'Backslash', name: '\\' },
-  { code: 'Delete', name: 'del' }, // 14
-
-  { code: 'CapsLock', name: 'caps' }, { code: 'KeyA', name: 'a' }, { code: 'KeyS', name: 's' },
-  { code: 'KeyD', name: 'd' }, { code: 'KeyF', name: 'f' }, { code: 'KeyG', name: 'g' },
-  { code: 'KeyH', name: 'h' }, { code: 'KeyJ', name: 'j' }, { code: 'KeyK', name: 'k' },
-  { code: 'KeyL', name: 'l' }, { code: 'Semicolon', name: ';' }, { code: 'Quote', name: '\'' },
-  { code: 'Enter', name: 'enter' }, // 13
-
-  { code: 'ShiftLeft', name: 'shift' }, { code: 'KeyZ', name: 'z' }, { code: 'KeyX', name: 'x' },
-  { code: 'KeyC', name: 'c' }, { code: 'KeyV', name: 'v' }, { code: 'KeyB', name: 'b' },
-  { code: 'KeyN', name: 'n' }, { code: 'KeyM', name: 'm' }, { code: 'Comma', name: ',' },
-  { code: 'Period', name: '.' }, { code: 'Slash', name: '/' }, { code: 'ArrowUp', name: '▲' },
-  { code: 'ShiftRight', name: 'shift' }, // 12
-
-  { code: 'ControlLeft', name: 'ctrl' }, { code: 'MetaLeft', name: 'win' }, { code: 'AltLeft', name: 'alt' },
-  { code: 'Space', name: 'space' }, { code: 'AltRight', name: 'alt' },
-  { code: 'ArrowLeft', name: '◄' }, { code: 'ArrowDown', name: '▼' }, { code: 'ArrowRight', name: '►' }, // 8
-];
-
-const keyRu = [
-  { code: 'Backquote', name: 'ё' }, { code: 'Digit1', name: '1' }, { code: 'Digit2', name: '2' },
-  { code: 'Digit3', name: '3' }, { code: 'Digit4', name: '4' }, { code: 'Digit5', name: '5' },
-  { code: 'Digit6', name: '6' }, { code: 'Digit7', name: '7' }, { code: 'Digit8', name: '8' },
-  { code: 'Digit9', name: '9' }, { code: 'Digit0', name: '0' }, { code: 'Minus', name: '-' },
-  { code: 'Equal', name: '=' }, { code: 'Backspace', name: 'backspace' }, // 14
-
-  { code: 'Tab', name: 'tab' }, { code: 'KeyQ', name: 'й' }, { code: 'KeyW', name: 'ц' },
-  { code: 'KeyE', name: 'у' }, { code: 'KeyR', name: 'к' }, { code: 'KeyT', name: 'е' },
-  { code: 'KeyY', name: 'н' }, { code: 'KeyU', name: 'г' }, { code: 'KeyI', name: 'ш' },
-  { code: 'KeyO', name: 'щ' }, { code: 'KeyP', name: 'з' }, { code: 'BracketLeft', name: 'х' },
-  { code: 'BracketRight', name: 'ъ' }, { code: 'Backslash', name: '\\' },
-  { code: 'Delete', name: 'del' }, // 14
-
-  { code: 'CapsLock', name: 'caps' }, { code: 'KeyA', name: 'ф' }, { code: 'KeyS', name: 'ы' },
-  { code: 'KeyD', name: 'в' }, { code: 'KeyF', name: 'а' }, { code: 'KeyG', name: 'п' },
-  { code: 'KeyH', name: 'р' }, { code: 'KeyJ', name: 'о' }, { code: 'KeyK', name: 'л' },
-  { code: 'KeyL', name: 'д' }, { code: 'Semicolon', name: 'ж' }, { code: 'Quote', name: 'э' },
-  { code: 'Enter', name: 'enter' }, // 13
-
-  { code: 'ShiftLeft', name: 'shift' }, { code: 'KeyZ', name: 'я' }, { code: 'KeyX', name: 'ч' },
-  { code: 'KeyC', name: 'с' }, { code: 'KeyV', name: 'м' }, { code: 'KeyB', name: 'и' },
-  { code: 'KeyN', name: 'т' }, { code: 'KeyM', name: 'ь' }, { code: 'Comma', name: 'б' },
-  { code: 'Period', name: 'ю' }, { code: 'Slash', name: '.' }, { code: 'ArrowUp', name: '▲' },
-  { code: 'ShiftRight', name: 'shift' }, // 12
-
-  { code: 'ControlLeft', name: 'ctrl' }, { code: 'MetaLeft', name: 'win' }, { code: 'AltLeft', name: 'alt' },
-  { code: 'Space', name: 'space' }, { code: 'AltRight', name: 'alt' },
-  { code: 'ArrowLeft', name: '◄' }, { code: 'ArrowDown', name: '▼' }, { code: 'ArrowRight', name: '►' }, // 8
-];
-
 const textarea = document.createElement('textarea');
 textarea.className = 'textarea';
 textarea.placeholder = 'Enter a message...';
 document.body.prepend(textarea);
 
-const keyboard = new Keyboard(keyRu);
+const keyboard = new Keyboard();
 keyboard.render();
+console.log(keyboard)
