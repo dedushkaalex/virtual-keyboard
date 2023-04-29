@@ -50,7 +50,6 @@ class KeyLayout {
     this.arrayKeys = keyObj;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   renderRow() {
     const keyboardRow = document.createElement('div');
     keyboardRow.className = 'keyboard__row';
@@ -151,10 +150,11 @@ class Keyboard {
       isShift: false,
       isTab: false,
       audioStandartKey: new Audio('./assets/audio/key.wav'),
+      isPlayed: false,
     };
     this.functionalsKey = ['Backspace', 'Tab', 'Space', 'Enter', 'CapsLock',
       'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'ShiftLeft', 'ShiftRight',
-      'ControlLeft', 'MetaLeft', 'AltLeft', 'AltRight'];
+      'ControlLeft', 'MetaLeft', 'AltLeft', 'AltRight', 'Delete'];
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
     window.addEventListener('keyup', this.handleKeyUp.bind(this));
     this.virtualKeys = null;
@@ -182,19 +182,42 @@ class Keyboard {
   }
 
   handleKeyDown(e) {
-    this.properties.audioStandartKey.play();
+    if (!this.properties.isPlayed) {
+      this.properties.audioStandartKey.play();
+      this.properties.isPlayed = true;
+    }
     const keyCode = e.code;
     const virtualKey = Array.from(this.virtualKeys).find((key) => key.dataset.keyCode === keyCode);
     if (virtualKey) {
       if (!this.functionalsKey.includes(virtualKey.dataset.keyCode)) {
-        e.preventDefault();
-        Keyboard.$getCurrentPositionCaret(this.textarea, virtualKey.firstElementChild.textContent);
+        if (!(e.ctrlKey && virtualKey.dataset.keyCode === 'KeyV')
+        && !(e.ctrlKey && virtualKey.dataset.keyCode === 'KeyA')
+        && !(e.ctrlKey && virtualKey.dataset.keyCode === 'KeyC')
+        && !(e.ctrlKey && virtualKey.dataset.keyCode === 'KeyX')) {
+          e.preventDefault();
+          Keyboard.$getCurrentPositionCaret(
+            this.textarea,
+            virtualKey.firstElementChild.textContent,
+          );
+        }
+      } else {
+        virtualKey.classList.add('active');
       }
       virtualKey.classList.add('active');
       this.textarea.focus();
-      if (keyCode === 'CapsLock') {
+      if (keyCode === 'CapsLock' && !e.repeat) {
         this.$toggleCapsLock();
         this.$toggleCapsLockText(this.virtualKeys);
+      } else if (e.shiftKey && (keyCode === 'ShiftLeft' || keyCode === 'ShiftRight')) {
+        this.properties.isShift = true;
+        this.$toggleShiftText(this.virtualKeys);
+      } else if (keyCode === 'Tab') {
+        e.preventDefault();
+        this.textarea.value += '    ';
+      } else if (keyCode === 'AltLeft' || keyCode === 'AltRight') {
+        e.preventDefault();
+      } else if (keyCode === 'ControlLeft' || keyCode === 'ControlRight') {
+        e.preventDefault();
       }
     }
     this.$changeLanguage(e);
@@ -205,6 +228,11 @@ class Keyboard {
     const virtualKey = Array.from(this.virtualKeys).find((key) => key.dataset.keyCode === keyCode);
     if (virtualKey) {
       virtualKey.classList.remove('active');
+      this.properties.isPlayed = false;
+      if (keyCode === 'ShiftLeft' || keyCode === 'ShiftRight') {
+        this.properties.isShift = false;
+        this.$toggleShiftText(this.virtualKeys);
+      }
     }
   }
 
@@ -254,31 +282,41 @@ class Keyboard {
           case 'Delete':
             Keyboard.$removeTextDelete(this.textarea);
             break;
-          // case 'ShiftLeft':
-          //   key.classList.add('active');
-          //   Array.from(this.elements.keys).map((i) => {
-          //     i.firstElementChild.textContent = i.firstElementChild.textContent.toUpperCase();
-          //   });
-          //   break;
-          // case 'ShiftRight':
-          // key.classList.add('active');
-          // Array.from(this.elements.keys).map((i) => {
-          //   i.firstElementChild.textContent = i.firstElementChild.textContent.toUpperCase();
-          // });
-          // break;
+          case 'ShiftLeft':
+            this.properties.isShift = true;
+            this.$toggleShiftText(this.virtualKeys);
+            key.classList.add('active');
+            break;
+          case 'ShiftRight':
+            this.properties.isShift = true;
+            this.$toggleShiftText(this.virtualKeys);
+            key.classList.add('active');
+            break;
+          case 'ControlLeft':
+            break;
+          case 'AltLeft':
+            break;
+          case 'MetaLeft':
+            break;
           default:
             key.classList.add('active');
             Keyboard.$getCurrentPositionCaret(this.textarea, key.textContent);
-            // this.textarea.value += key.textContent;
             break;
         }
       }
     });
-    this.virtualKeyboard.addEventListener('mouseup', () => this.textarea.focus());
+    this.virtualKeyboard.addEventListener('mouseup', (e) => {
+      this.textarea.focus();
+      const key = e.target.closest('.key');
+      if (key && (key.dataset.keyCode === 'ShiftLeft' || key.dataset.keyCode === 'ShiftRight')) {
+        this.properties.isShift = false;
+        this.$toggleShiftText(this.virtualKeys);
+      }
+    });
   }
 
   $changeLanguage(e) {
-    if (e.ctrlKey && e.altKey) {
+    if (e.ctrlKey && e.altKey && !e.repeat) {
       if (localStorage.getItem('language') === 'en') {
         this.storage.setStorage('language', 'ru');
       } else {
@@ -286,7 +324,8 @@ class Keyboard {
       }
       this.arrayKeys = this.storage.objLng[localStorage.getItem('language')];
       this.virtualKeyboard.remove();
-      this.keyboard.render();
+      this.render();
+      this.$toggleCapsLockText(this.virtualKeys);
     }
     return localStorage.getItem('language');
   }
@@ -299,6 +338,17 @@ class Keyboard {
     keysSelector.forEach((key) => {
       const elem = key;
       if (this.properties.isCapsLock) {
+        elem.firstElementChild.textContent = key.firstElementChild.textContent.toUpperCase();
+      } else {
+        elem.firstElementChild.textContent = key.firstElementChild.textContent.toLowerCase();
+      }
+    });
+  }
+
+  $toggleShiftText(keysSelector) {
+    keysSelector.forEach((key) => {
+      const elem = key;
+      if (this.properties.isShift) {
         elem.firstElementChild.textContent = key.firstElementChild.textContent.toUpperCase();
       } else {
         elem.firstElementChild.textContent = key.firstElementChild.textContent.toLowerCase();
@@ -354,4 +404,3 @@ document.body.prepend(textarea);
 
 const keyboard = new Keyboard();
 keyboard.render();
-console.log(keyboard)
