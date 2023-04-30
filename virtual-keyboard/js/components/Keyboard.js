@@ -21,6 +21,7 @@ export default class Keyboard {
     this.virtualKeys = null;
     this.virtualKeyboard = null;
     this.textarea = document.querySelector('.textarea');
+    document.body.classList.add(this.language);
   }
 
   render() {
@@ -65,10 +66,7 @@ export default class Keyboard {
           && !(e.ctrlKey && virtualKey.dataset.keyCode === 'KeyC')
           && !(e.ctrlKey && virtualKey.dataset.keyCode === 'KeyX')) {
           e.preventDefault();
-          Keyboard.$getCurrentPositionCaret(
-            this.textarea,
-            virtualKey.firstElementChild.textContent,
-          );
+          this.$hotkeyShiftButtons(e);
         }
       } else {
         virtualKey.classList.add('active');
@@ -174,7 +172,17 @@ export default class Keyboard {
             break;
           default:
             key.classList.add('active');
-            Keyboard.$getCurrentPositionCaret(this.textarea, key.textContent);
+            if (this.properties.isShift && key.firstElementChild.dataset.subName) {
+              Keyboard.$getCurrentPositionCaret(
+                this.textarea,
+                key.firstElementChild.dataset.subName,
+              );
+            } else {
+              Keyboard.$getCurrentPositionCaret(
+                this.textarea,
+                key.textContent,
+              );
+            }
             break;
         }
       }
@@ -192,8 +200,12 @@ export default class Keyboard {
   $changeLanguage(e) {
     if (e.ctrlKey && e.altKey && !e.repeat) {
       if (localStorage.getItem('language') === 'en') {
+        document.body.classList.add('ru');
+        document.body.classList.remove('en');
         Storage.setStorage('language', 'ru');
       } else {
+        document.body.classList.add('en');
+        document.body.classList.remove('ru');
         Storage.setStorage('language', 'en');
       }
       this.arrayKeys = this.storage.objLng[localStorage.getItem('language')];
@@ -230,10 +242,30 @@ export default class Keyboard {
     });
   }
 
+  $hotkeyShiftButtons(e) {
+    const keyCode = e.code;
+    const virtualKey = Array.from(this.virtualKeys).find((key) => key.dataset.keyCode === keyCode);
+    if (!this.functionalsKey.includes(e.code) && e.shiftKey
+      && virtualKey.firstElementChild.dataset.subName) {
+      Keyboard.$getCurrentPositionCaret(
+        this.textarea,
+        virtualKey.firstElementChild.dataset.subName,
+      );
+    } else {
+      Keyboard.$getCurrentPositionCaret(
+        this.textarea,
+        virtualKey.firstElementChild.textContent,
+      );
+    }
+  }
+
   static $removeTextBackSpace(textareaSelector) {
     const currentPosCaret = textareaSelector.selectionStart;
     const endCaret = currentPosCaret;
-    if (endCaret >= 1) {
+
+    if (textareaSelector.selectionStart !== textareaSelector.selectionEnd) {
+      textareaSelector.setRangeText('', textareaSelector.selectionStart, textareaSelector.selectionEnd, 'end');
+    } else if (endCaret >= 1) {
       textareaSelector.setRangeText('', endCaret - 1, currentPosCaret, 'end');
     }
   }
@@ -241,7 +273,11 @@ export default class Keyboard {
   static $removeTextDelete(textareaSelector) {
     const currentPosCaret = textareaSelector.selectionStart;
     const endCaret = currentPosCaret;
-    textareaSelector.setRangeText('', endCaret, currentPosCaret + 1, 'end');
+    if (textareaSelector.selectionStart !== textareaSelector.selectionEnd) {
+      textareaSelector.setRangeText('', textareaSelector.selectionStart, textareaSelector.selectionEnd, 'end');
+    } else {
+      textareaSelector.setRangeText('', endCaret, currentPosCaret + 1, 'end');
+    }
   }
 
   static $getCurrentPositionCaret(textareaSelector, value) {
@@ -263,8 +299,23 @@ export default class Keyboard {
       const maxCharsPerLine = Math.floor(
         textarea.scrollWidth / (parseFloat(getComputedStyle(textarea).fontSize) * 0.63),
       );
-      const absRow = Math.abs(textarea.selectionStart - maxCharsPerLine);
-      textarea.selectionStart = absRow;
+      const lines = textarea.value.substr(0, textarea.selectionStart).split('\n');
+      const currentLine = lines.length - 1;
+      const currentLineStart = lines.slice(0, currentLine).join('\n').length;
+      const absRow = Math.abs(textarea.selectionStart - currentLineStart - maxCharsPerLine);
+      const currentLineText = lines[currentLine];
+      const prevLineText = lines[currentLine - 1];
+      if (prevLineText && prevLineText.length >= currentLineText.length) {
+        const prevLineStart = currentLineStart - prevLineText.length - 1;
+        const prevLineMaxChars = Math.floor(
+          (textarea.scrollWidth - parseFloat(getComputedStyle(textarea).fontSize))
+          / (parseFloat(getComputedStyle(textarea).fontSize) * 0.63),
+        );
+        const prevLineAbsRow = Math.min(prevLineMaxChars, prevLineText.length - absRow);
+        textarea.selectionStart = prevLineStart + prevLineAbsRow;
+      } else {
+        textarea.selectionStart = currentLineStart + absRow;
+      }
       textarea.selectionEnd = textarea.selectionStart;
     } else if (keyCode === 'ArrowDown') {
       const maxCharsPerLine = Math.floor(
