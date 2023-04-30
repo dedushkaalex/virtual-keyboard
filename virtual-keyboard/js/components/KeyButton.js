@@ -1,7 +1,8 @@
 export default class KeyButton {
-  constructor(symbol, keyCode) {
+  constructor(symbol, keyCode, subname = undefined) {
     this.symbol = symbol;
     this.keyCode = keyCode;
+    this.subname = subname;
     this.isPressed = false;
     this.audioStandartKey = new Audio('./assets/audio/key.wav');
     this.element = this.createKey();
@@ -18,13 +19,18 @@ export default class KeyButton {
     if (this.keyCode === 'Tab') keyElement.classList.add('key-tab');
     if (this.keyCode === 'CapsLock') keyElement.classList.add('key-caps');
     if (this.keyCode === 'ShiftLeft' || this.keyCode === 'ShiftRight') keyElement.classList.add('key-shift');
+    if (this.keyCode === 'ShiftLeft') keyElement.classList.add('key-shift__left');
+    if (this.keyCode === 'ShiftRight') keyElement.classList.add('key-shift__right');
     if (this.keyCode === 'Enter') keyElement.classList.add('key-enter');
     if (this.keyCode === 'ControlLeft') keyElement.classList.add('key-ctrl');
     if (this.keyCode === 'MetaLeft') keyElement.classList.add('key-win');
     if (this.keyCode === 'AltLeft' || this.keyCode === 'AltRight') keyElement.classList.add('key-alt');
     if (this.keyCode === 'Space') keyElement.classList.add('key-space');
-    if (this.keyCode === 'Delete') keyElement.classList.add('key-del');
+    if (this.keyCode === 'Delete') keyElement.classList.add('key-delete');
     keyElement.insertAdjacentHTML('beforeend', `<i>${this.symbol}</i>`);
+    if (this.subname) {
+      keyElement.firstElementChild.dataset.subName = this.subname;
+    }
     return keyElement;
   }
 
@@ -37,6 +43,8 @@ export default class KeyButton {
   handleMouseUp() {
     this.isPressed = false;
     this.element.classList.remove('active');
+    this.audioStandartKey.pause();
+    this.audioStandartKey.currentTime = 0;
   }
 
   handleMouseLeave() {
