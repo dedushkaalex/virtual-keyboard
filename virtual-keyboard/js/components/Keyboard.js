@@ -27,11 +27,11 @@ export default class Keyboard {
     const keyboard = document.createElement('div');
     keyboard.classList.add('keyboard');
     document.body.prepend(keyboard);
-    const row1 = new KeyLayout(this.arrayKeys.slice(0, 14)).renderRow();
-    const row2 = new KeyLayout(this.arrayKeys.slice(14, 29)).renderRow();
-    const row3 = new KeyLayout(this.arrayKeys.slice(29, 42)).renderRow();
-    const row4 = new KeyLayout(this.arrayKeys.slice(42, 55)).renderRow();
-    const row5 = new KeyLayout(this.arrayKeys.slice(55, 64)).renderRow();
+    const row1 = new KeyLayout(this.arrayKeys.slice(0, 14)).renderRow(1);
+    const row2 = new KeyLayout(this.arrayKeys.slice(14, 29)).renderRow(2);
+    const row3 = new KeyLayout(this.arrayKeys.slice(29, 42)).renderRow(3);
+    const row4 = new KeyLayout(this.arrayKeys.slice(42, 55)).renderRow(4);
+    const row5 = new KeyLayout(this.arrayKeys.slice(55, 64)).renderRow(5);
     keyboard.append(row1);
     keyboard.append(row2);
     keyboard.append(row3);
@@ -98,6 +98,8 @@ export default class Keyboard {
     const virtualKey = Array.from(this.virtualKeys).find((key) => key.dataset.keyCode === keyCode);
     if (virtualKey) {
       virtualKey.classList.remove('active');
+      this.properties.audioStandartKey.pause();
+      this.properties.audioStandartKey.currentTime = 0;
       this.properties.isPlayed = false;
       if (keyCode === 'ShiftLeft' || keyCode === 'ShiftRight') {
         this.properties.isShift = false;
@@ -165,6 +167,8 @@ export default class Keyboard {
           case 'ControlLeft':
             break;
           case 'AltLeft':
+            break;
+          case 'AltRight':
             break;
           case 'MetaLeft':
             break;
@@ -255,12 +259,18 @@ export default class Keyboard {
       textarea.selectionStart += 1;
       textarea.selectionEnd = textarea.selectionStart;
     } else if (keyCode === 'ArrowUp') {
-      // 104 - количество текста, которое может влезть в строку
-      const absRow = Math.abs(textarea.selectionStart - 104);
+      // 0.63 - это приблизительное соотношение ширины символа к его высоте.
+      const maxCharsPerLine = Math.floor(
+        textarea.scrollWidth / (parseFloat(getComputedStyle(textarea).fontSize) * 0.63),
+      );
+      const absRow = Math.abs(textarea.selectionStart - maxCharsPerLine);
       textarea.selectionStart = absRow;
       textarea.selectionEnd = textarea.selectionStart;
     } else if (keyCode === 'ArrowDown') {
-      const absRow = Math.abs(textarea.selectionStart + 104);
+      const maxCharsPerLine = Math.floor(
+        textarea.scrollWidth / (parseFloat(getComputedStyle(textarea).fontSize) * 0.63),
+      );
+      const absRow = Math.abs(textarea.selectionStart + maxCharsPerLine);
       textarea.selectionStart = absRow;
       textarea.selectionEnd = textarea.selectionStart;
     }
