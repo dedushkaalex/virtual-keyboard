@@ -5,14 +5,18 @@ export default class KeyLayout {
     this.arrayKeys = keyObj;
   }
 
-  renderRow() {
+  renderRow(index) {
     const keyboardRow = document.createElement('div');
-    keyboardRow.className = 'keyboard__row';
+    keyboardRow.className = `keyboard__row row-${index}`;
     const keyboardList = document.createElement('div');
     keyboardList.className = 'keyboard__list';
     keyboardRow.append(keyboardList);
     this.arrayKeys
-      .map((objKey) => keyboardList.append(new KeyButton(objKey.name, objKey.code).element));
+      .map((objKey) => keyboardList.append(new KeyButton(
+        objKey.name,
+        objKey.code,
+        objKey.subname,
+      ).element));
     return keyboardRow;
   }
 }
