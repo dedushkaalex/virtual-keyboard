@@ -21,6 +21,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 100px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .keyboard {
@@ -42,23 +44,23 @@ body {
 }
 
 .row-1 .key {
-  margin-right: calc(46px/14);
+  margin-right: calc(5rem/14);
 }
 
 .row-2 .key {
-  margin-right: calc(46px/15);
+  margin-right: calc(5rem/15);
 }
 
 .row-3 .key {
-  margin-right: calc(46px/13);
+  margin-right: calc(5rem/13);
 }
 
 .row-4 .key {
-  margin-right: calc(46px/12);
+  margin-right: calc(5rem/12);
 }
 
 .row-5 .key {
-  margin-right: calc(46px/11.2);
+  margin-right: calc(5rem/11.2);
 }
 
 .key {
@@ -76,6 +78,8 @@ body {
     10px 20px 25px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   z-index: 2;
+  cursor: pointer;
+  user-select: none;
 }
 
 .key::before {
@@ -97,6 +101,17 @@ body {
 
 .key-backspace {
   width: 195px;
+}
+
+.key-backspace i {
+  display: inline-block;
+  background-image: url(../assets/img/icons/backspace.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  background-position: 40px -5px;
+  transform: scale(0.6);
 }
 
 .key-tab {
@@ -146,6 +161,17 @@ body {
   width: 170px;
 }
 
+.key-enter i {
+  display: inline-block;
+  background-image: url(../assets/img/icons/enter.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  background-position: 15px -5px;
+  transform: scale(0.6);
+}
+
 .key-shift {
   width: 160px;
 }
@@ -158,11 +184,22 @@ body {
   height: 100%;
   position: relative;
   z-index: 10;
-  background-position: -3px 1px;
+  background-position: -3px 5px;
   background-repeat: no-repeat;
   background-size: contain;
   transform: scale(0.9);
   top: -6px;
+}
+
+.key-shift__right i {
+  display: inline-block;
+  background-image: url(../assets/img/icons/shift.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  background-position: -5px -5px;
+  transform: scale(0.6);
 }
 
 .key-ctrl i {
@@ -202,7 +239,7 @@ body {
 }
 
 .key-space {
-  width: 405px;
+  width: 415px;
 }
 
 .key-space,
@@ -283,6 +320,14 @@ body {
   z-index: 2;
 }
 
+.key i::before {
+  content: attr(data-sub-name);
+  position: absolute;
+  top: 15px;
+  right: -20px;
+  font-size: 1rem;
+}
+
 
 /* .active::before, */
 .active {
@@ -297,12 +342,20 @@ body {
 }
 
 .key-space.active i {
-  filter: drop-shadow(0 0 10px #f40847);
+  filter: drop-shadow(0 0 10px #e9890d);
 }
 
 .key-space.active::before {
-  box-shadow: inset 0px 0px 15px #d030d5;
+  box-shadow: inset 0px 0px 15px #228aec;
   border: 0;
+}
+
+.key-caps.active i,
+.key-tab.active i,
+.key-ctrl.active i,
+.key-win.active i,
+.key-shift__left.active i {
+  filter: drop-shadow(0 0 10px #f47608);
 }
 
 /*textarea*/
@@ -317,9 +370,10 @@ body {
   font-weight: 500;
   font-size: 2em;
   line-height: 1.4;
-  width: 80%;
+  width: 1180px;
   height: 400px;
   resize: none;
+  margin-bottom: 50px;
 }
 
 .key-space i {
@@ -335,5 +389,81 @@ body {
   position: relative;
   transform: scale(0.9);
   bottom: 10px;
-  filter: drop-shadow(0 0 20px #ec0909);
+  filter: drop-shadow(0 0 20px #f34c19);
+}
+
+@media screen and (max-width: 1200px) {
+  .textarea {
+    width: 960px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .keyboard {
+    width: 960px;
+  }
+
+  .key {
+    width: 53px;
+    height: 52px;
+  }
+
+  .key-backspace {
+    width: 145px;
+  }
+
+  .key-tab {
+    width: 90px;
+  }
+
+  .key-delete {
+    width: 55px;
+  }
+
+  .key-pause {
+    width: 65px;
+  }
+
+  .key-caps {
+    width: 120px;
+  }
+
+  .key-enter {
+    width: 130px;
+  }
+
+  .key-caps i {
+    background-position: 25px 2px;
+  }
+
+  .key-shift__left {
+    width: 130px;
+  }
+
+  .key-shift__right {
+    width: 115px;
+  }
+
+  .key-ctrl {
+    width: 70px;
+  }
+
+  .key-win {
+    width: 70px;
+  }
+
+  .key-space {
+    width: 390px;
+  }
+
+  .key-win i {
+    background-position: -2px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    transform: scale(1.2);
+  }
+
+  .key i {
+    font-size: 1rem;
+  }
 }
