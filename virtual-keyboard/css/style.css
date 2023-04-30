@@ -4,54 +4,69 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+  width: 100%;
+}
+
 body {
+  width: 100%;
+  height: 100%;
   font-family: 'Heebo', sans-serif;
-  background-color: #232323;
+  background-color: #d2cece;
   display: flex;
-  justify-content: center;
   padding-top: 70px;
   caret-color: #f26006;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 100px;
 }
 
 .keyboard {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 1px solid #000;
-  border-radius: 18px;
-  width: 1200px;
-  padding: 15px;
-  background-color: #ffffff;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  background-color: #6e716d;
+  padding: 10px 20px 9px;
+  width: max-content;
+  box-shadow: 0 20px 0 #313631;
+  border-radius: 12px;
+  background-image: url(../assets/img/bg.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  z-index: 1;
 }
 
 .keyboard__row {
-  margin-bottom: 15px;
+  margin-bottom: 1px;
 }
 
-.keyboard__list {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.row-1 .key {
+  margin-right: calc(46px/14);
 }
 
-.keyboard__row:last-child .keyboard__list {
-  justify-content: center;
-  gap: 15px;
-  width: 1100px;
+.row-2 .key {
+  margin-right: calc(46px/15);
+}
+
+.row-3 .key {
+  margin-right: calc(46px/13);
+}
+
+.row-4 .key {
+  margin-right: calc(46px/12);
+}
+
+.row-5 .key {
+  margin-right: calc(46px/11.2);
 }
 
 .key {
+  filter: opacity(0.97);
   position: relative;
   display: inline-block;
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
   border-radius: 10px;
   padding: 8px 15px;
   background: linear-gradient(180deg, #282828, #202020);
@@ -80,6 +95,186 @@ body {
   transition: all 0.3s ease;
 }
 
+.key-backspace {
+  width: 195px;
+}
+
+.key-tab {
+  width: 120px;
+}
+
+.key-tab i {
+  display: inline-block;
+  background-image: url(../assets/img/u-1.png);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  bottom: -4px;
+}
+
+.key-delete {
+  width: 75px;
+}
+
+.key-pause {
+  width: 65px;
+}
+
+.key-caps {
+  width: 155px;
+}
+
+.key-caps i {
+  position: relative;
+  display: inline-block;
+  background-image: url(../assets/img/u-2.png);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  background-position: 39px 2px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  top: -6px;
+}
+
+.key-enter {
+  width: 170px;
+}
+
+.key-shift {
+  width: 160px;
+}
+
+.key-shift__left i {
+  position: relative;
+  display: inline-block;
+  background-image: url(../assets/img/u-3.png);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  background-position: -3px 1px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: scale(0.9);
+  top: -6px;
+}
+
+.key-ctrl i {
+  position: relative;
+  display: inline-block;
+  background-image: url(../assets/img/u-4.png);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: scale(0.9);
+  top: -6px;
+}
+
+.key-win i {
+  position: relative;
+  display: inline-block;
+  background-image: url(../assets/img/u-5.png);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  background-position: -10px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: scale(1.2);
+  top: -6px;
+}
+
+.key-ctrl,
+.key-win,
+.key-alt {
+  width: 90px;
+}
+
+.key-space {
+  width: 405px;
+}
+
+.key-space,
+.key-tab,
+.key-caps,
+.key-shift,
+.key-ctrl,
+.key-win,
+.key-alt,
+.key-enter,
+.key-backspace,
+.key-delete {
+  background: linear-gradient(162deg, rgb(171, 61, 226) 40%, rgba(100, 189, 57, 1) 60%);
+  background-size: 300% 300%;
+  animation: gradient 5s ease infinite, boxmove 5s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes boxmove {
+  0% {
+    box-shadow: -4px -10px 20px rgba(173, 29, 230, 0.25), 10px 5px 25px rgba(25, 238, 14, 0.15);
+  }
+
+  50% {
+    box-shadow: -4px -10px 25px rgba(190, 51, 244, 0.25), 10px 5px 25px rgba(51, 244, 41, 0.15);
+  }
+
+  100% {
+    box-shadow: -4px -10px 25px rgba(173, 29, 230, 0.25), 10px 5px 25px rgba(25, 238, 14, 0.15);
+  }
+
+}
+
+.key-space:before,
+.key-tab:before,
+.key-caps:before,
+.key-shift:before,
+.key-ctrl:before,
+.key-win:before,
+.key-alt:before,
+.key-enter:before,
+.key-backspace:before,
+.key-delete:before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  bottom: 14px;
+  right: 12px;
+  background: linear-gradient(90deg, #1d1d1d, #4a4a4a);
+  border-radius: 10px;
+  box-shadow: -10px -10px 10px rgba(255, 255, 255, 0.25), 10px 5px 10px rgba(0, 0, 0, 0.15);
+  border-left: 1px solid #0004;
+  border-bottom: 1px solid #0004;
+  border-top: 1px solid #0009;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
 .key i {
   position: relative;
   color: #fff;
@@ -88,39 +283,26 @@ body {
   z-index: 2;
 }
 
+
 /* .active::before, */
 .active {
-  box-shadow: 0px 0px 20px rgb(242, 96, 6),
-    0px 0px 15px rgb(248, 128, 54),
+  box-shadow: 0px 0px 20px rgb(171, 61, 226),
+    0px 0px 15px rgb(171, 61, 226),
     0px 0px 17px rgb(245, 244, 244);
   transform: scale(0.98);
 }
 
 .active i {
-  color: #f26006;
+  color: rgb(171, 61, 226);
 }
 
-
-.key-tab {
-  flex-basis: 120px;
+.key-space.active i {
+  filter: drop-shadow(0 0 10px #f40847);
 }
 
-.key-caps,
-.key-enter,
-.key-shift,
-.key-backspace {
-  flex-basis: 140px;
-}
-
-.key-ctrl,
-.key-win,
-.key-alt {
-  width: 85px;
-  height: 70px;
-}
-
-.key-space {
-  flex-basis: 500px;
+.key-space.active::before {
+  box-shadow: inset 0px 0px 15px #d030d5;
+  border: 0;
 }
 
 /*textarea*/
@@ -138,4 +320,20 @@ body {
   width: 80%;
   height: 400px;
   resize: none;
+}
+
+.key-space i {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-image: url(../assets/img/katana.png);
+  position: relative;
+  z-index: 10;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  transform: scale(0.9);
+  bottom: 10px;
+  filter: drop-shadow(0 0 20px #ec0909);
 }
