@@ -295,35 +295,27 @@ export default class Keyboard {
       textarea.selectionStart += 1;
       textarea.selectionEnd = textarea.selectionStart;
     } else if (keyCode === 'ArrowUp') {
-      // 0.63 - это приблизительное соотношение ширины символа к его высоте.
-      const maxCharsPerLine = Math.floor(
-        textarea.scrollWidth / (parseFloat(getComputedStyle(textarea).fontSize) * 0.63),
-      );
-      const lines = textarea.value.substr(0, textarea.selectionStart).split('\n');
-      const currentLine = lines.length - 1;
-      const currentLineStart = lines.slice(0, currentLine).join('\n').length;
-      const absRow = Math.abs(textarea.selectionStart - currentLineStart - maxCharsPerLine);
-      const currentLineText = lines[currentLine];
-      const prevLineText = lines[currentLine - 1];
-      if (prevLineText && prevLineText.length >= currentLineText.length) {
-        const prevLineStart = currentLineStart - prevLineText.length - 1;
-        const prevLineMaxChars = Math.floor(
-          (textarea.scrollWidth - parseFloat(getComputedStyle(textarea).fontSize))
-          / (parseFloat(getComputedStyle(textarea).fontSize) * 0.63),
-        );
-        const prevLineAbsRow = Math.min(prevLineMaxChars, prevLineText.length - absRow);
-        textarea.selectionStart = prevLineStart + prevLineAbsRow;
-      } else {
-        textarea.selectionStart = currentLineStart + absRow;
-      }
-      textarea.selectionEnd = textarea.selectionStart;
+      // // 0.63 - это приблизительное соотношение ширины символа к его высоте.
+      const currentPosition = textarea.selectionStart;
+      const currentLineStart = textarea.value.lastIndexOf('\n', currentPosition - 1) + 1;
+      const currentColumn = currentPosition - currentLineStart;
+      const previousLineStart = textarea.value.lastIndexOf('\n', currentLineStart - 2) + 1;
+      const previousLineEnd = currentLineStart - 1;
+      const previousLineLength = previousLineEnd - previousLineStart;
+      const previousColumn = Math.min(currentColumn, previousLineLength);
+      const newPosition = previousLineStart + previousColumn;
+      textarea.setSelectionRange(newPosition, newPosition);
     } else if (keyCode === 'ArrowDown') {
-      const maxCharsPerLine = Math.floor(
-        textarea.scrollWidth / (parseFloat(getComputedStyle(textarea).fontSize) * 0.63),
-      );
-      const absRow = Math.abs(textarea.selectionStart + maxCharsPerLine);
-      textarea.selectionStart = absRow;
-      textarea.selectionEnd = textarea.selectionStart;
+      const currentPosition = textarea.selectionStart;
+      const currentLineStart = textarea.value.lastIndexOf('\n', currentPosition - 1) + 1;
+      const currentLineEnd = textarea.value.indexOf('\n', currentPosition) !== -1 ? textarea.value.indexOf('\n', currentPosition) : textarea.value.length;
+      const currentColumn = currentPosition - currentLineStart;
+      const nextLineStart = currentLineEnd + 1;
+      const nextLineEnd = textarea.value.indexOf('\n', currentLineEnd + 1) !== -1 ? textarea.value.indexOf('\n', currentLineEnd + 1) : textarea.value.length;
+      const nextLineLength = nextLineEnd - nextLineStart;
+      const nextColumn = Math.min(currentColumn, nextLineLength);
+      const newPosition = nextLineStart + nextColumn;
+      textarea.setSelectionRange(newPosition, newPosition);
     }
   }
 }

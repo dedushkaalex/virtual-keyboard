@@ -25,6 +25,10 @@ body {
   padding-right: 15px;
 }
 
+.help {
+  margin-bottom: 20px;
+}
+
 .keyboard {
   background-color: #6e716d;
   padding: 10px 20px 9px;
@@ -465,5 +469,16 @@ body {
 
   .key i {
     font-size: 1rem;
+  }
+
+  .key i::before {
+    top: 12px;
+    right: -18px;
+    font-size: 0.9rem;
+  }
+
+  .key::before {
+    bottom: 7px;
+    right: 6px;
   }
 }
