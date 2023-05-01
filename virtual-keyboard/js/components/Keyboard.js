@@ -12,6 +12,8 @@ export default class Keyboard {
       isTab: false,
       audioStandartKey: new Audio('./assets/audio/key.wav'),
       isPlayed: false,
+      isCtrl: false,
+      isAlt: false,
     };
     this.functionalsKey = ['Backspace', 'Tab', 'Space', 'Enter', 'CapsLock',
       'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'ShiftLeft', 'ShiftRight',
@@ -49,8 +51,6 @@ export default class Keyboard {
       if (startPlayPromise !== undefined) {
         startPlayPromise
           .then(() => {
-            // Start whatever you need to do only after playback
-            // has begun.
           })
           .catch(() => {
           });
@@ -83,12 +83,16 @@ export default class Keyboard {
         e.preventDefault();
         this.textarea.value += '    ';
       } else if (keyCode === 'AltLeft' || keyCode === 'AltRight') {
+        this.properties.isAlt = true;
         e.preventDefault();
       } else if (keyCode === 'ControlLeft' || keyCode === 'ControlRight') {
+        this.properties.isCtrl = true;
         e.preventDefault();
       }
     }
-    this.$changeLanguage(e);
+    if ((e.ctrlKey && e.altKey && !e.repeat)) {
+      this.$changeLanguage();
+    }
   }
 
   handleKeyUp(e) {
@@ -99,6 +103,8 @@ export default class Keyboard {
       this.properties.audioStandartKey.pause();
       this.properties.audioStandartKey.currentTime = 0;
       this.properties.isPlayed = false;
+      this.properties.isCtrl = false;
+      this.properties.isAlt = false;
       if (keyCode === 'ShiftLeft' || keyCode === 'ShiftRight') {
         this.properties.isShift = false;
         this.$toggleShiftText(this.virtualKeys);
@@ -163,10 +169,19 @@ export default class Keyboard {
             key.classList.add('active');
             break;
           case 'ControlLeft':
+            if (this.properties.isAlt) {
+              this.$changeLanguage();
+            }
             break;
           case 'AltLeft':
+            if (this.properties.isCtrl) {
+              this.$changeLanguage();
+            }
             break;
           case 'AltRight':
+            if (this.properties.isCtrl) {
+              this.$changeLanguage();
+            }
             break;
           case 'MetaLeft':
             break;
@@ -190,29 +205,32 @@ export default class Keyboard {
     this.virtualKeyboard.addEventListener('mouseup', (e) => {
       this.textarea.focus();
       const key = e.target.closest('.key');
+      this.properties.isCtrl = false;
+      this.properties.isAlt = false;
       if (key && (key.dataset.keyCode === 'ShiftLeft' || key.dataset.keyCode === 'ShiftRight')) {
         this.properties.isShift = false;
         this.$toggleShiftText(this.virtualKeys);
       }
+      this.properties.audioStandartKey.pause();
+      this.properties.audioStandartKey.currentTime = 0;
     });
   }
 
-  $changeLanguage(e) {
-    if (e.ctrlKey && e.altKey && !e.repeat) {
-      if (localStorage.getItem('language') === 'en') {
-        document.body.classList.add('ru');
-        document.body.classList.remove('en');
-        Storage.setStorage('language', 'ru');
-      } else {
-        document.body.classList.add('en');
-        document.body.classList.remove('ru');
-        Storage.setStorage('language', 'en');
-      }
-      this.arrayKeys = this.storage.objLng[localStorage.getItem('language')];
-      this.virtualKeyboard.remove();
-      this.render();
-      this.$toggleCapsLockText(this.virtualKeys);
+  $changeLanguage() {
+    if (localStorage.getItem('language') === 'en') {
+      document.body.classList.add('ru');
+      document.body.classList.remove('en');
+      Storage.setStorage('language', 'ru');
+    } else {
+      document.body.classList.add('en');
+      document.body.classList.remove('ru');
+      Storage.setStorage('language', 'en');
     }
+    this.arrayKeys = this.storage.objLng[localStorage.getItem('language')];
+    this.virtualKeyboard.remove();
+    this.render();
+    this.$toggleCapsLockText(this.virtualKeys);
+
     return localStorage.getItem('language');
   }
 
