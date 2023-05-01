@@ -4,7 +4,6 @@ export default class KeyButton {
     this.keyCode = keyCode;
     this.subname = subname;
     this.isPressed = false;
-    this.audioStandartKey = new Audio('./assets/audio/key.wav');
     this.element = this.createKey();
     this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
     this.element.addEventListener('mouseup', this.handleMouseUp.bind(this));
@@ -37,14 +36,11 @@ export default class KeyButton {
   handleMouseDown() {
     this.isPressed = true;
     this.element.classList.add('active');
-    this.audioStandartKey.play();
   }
 
   handleMouseUp() {
     this.isPressed = false;
     this.element.classList.remove('active');
-    this.audioStandartKey.pause();
-    this.audioStandartKey.currentTime = 0;
   }
 
   handleMouseLeave() {
