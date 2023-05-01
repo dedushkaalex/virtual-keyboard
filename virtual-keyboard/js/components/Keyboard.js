@@ -13,7 +13,8 @@ export default class Keyboard {
       audioStandartKey: new Audio('./assets/audio/key.wav'),
       isPlayed: false,
       isCtrl: false,
-      isAlt: false,
+      isAltLeft: false,
+      isAltRight: false,
     };
     this.functionalsKey = ['Backspace', 'Tab', 'Space', 'Enter', 'CapsLock',
       'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'ShiftLeft', 'ShiftRight',
@@ -47,6 +48,7 @@ export default class Keyboard {
 
   handleKeyDown(e) {
     if (!this.properties.isPlayed) {
+      this.properties.audioStandartKey.currentTime = 0.02;
       const startPlayPromise = this.properties.audioStandartKey.play();
       if (startPlayPromise !== undefined) {
         startPlayPromise
@@ -74,6 +76,8 @@ export default class Keyboard {
       virtualKey.classList.add('active');
       this.textarea.focus();
       if (keyCode === 'CapsLock' && !e.repeat) {
+        this.properties.audioStandartKey.currentTime = 0.02;
+        this.properties.audioStandartKey.play();
         this.$toggleCapsLock();
         this.$toggleCapsLockText(this.virtualKeys);
       } else if (e.shiftKey && (keyCode === 'ShiftLeft' || keyCode === 'ShiftRight')) {
@@ -82,11 +86,25 @@ export default class Keyboard {
       } else if (keyCode === 'Tab') {
         e.preventDefault();
         this.textarea.value += '    ';
-      } else if (keyCode === 'AltLeft' || keyCode === 'AltRight') {
-        this.properties.isAlt = true;
+      } else if (keyCode === 'AltLeft') {
+        this.properties.isAltLeft = true;
+        if (document.querySelector('.key-ctrl').classList.contains('active') && !e.ctrlKey && !e.repeat) {
+          this.$changeLanguage();
+        }
+        e.preventDefault();
+      } else if (keyCode === 'AltRight') {
+        this.properties.isAltRight = true;
+        if (document.querySelector('.key-ctrl').classList.contains('active') && !e.ctrlKey && !e.repeat) {
+          this.$changeLanguage();
+        }
         e.preventDefault();
       } else if (keyCode === 'ControlLeft' || keyCode === 'ControlRight') {
         this.properties.isCtrl = true;
+        if (document.querySelector('[data-key-code="AltLeft"]').classList.contains('active') && !e.altKey && !e.repeat) {
+          this.$changeLanguage();
+        } else if (document.querySelector('[data-key-code="AltRight"]').classList.contains('active') && !e.altKey && !e.repeat) {
+          this.$changeLanguage();
+        }
         e.preventDefault();
       }
     }
@@ -101,10 +119,14 @@ export default class Keyboard {
     if (virtualKey) {
       virtualKey.classList.remove('active');
       this.properties.audioStandartKey.pause();
-      this.properties.audioStandartKey.currentTime = 0;
+      this.properties.audioStandartKey.currentTime = 0.02;
       this.properties.isPlayed = false;
       this.properties.isCtrl = false;
-      this.properties.isAlt = false;
+      if (keyCode === 'AltLeft' || keyCode === 'AltRight') {
+        this.properties.isAltLeft = false;
+        this.properties.isAltRight = false;
+      }
+
       if (keyCode === 'ShiftLeft' || keyCode === 'ShiftRight') {
         this.properties.isShift = false;
         this.$toggleShiftText(this.virtualKeys);
@@ -116,6 +138,8 @@ export default class Keyboard {
     this.virtualKeyboard.addEventListener('mousedown', (e) => {
       const key = e.target.closest('.key');
       if (key) {
+        this.properties.audioStandartKey.currentTime = 0.02;
+        this.properties.audioStandartKey.play();
         switch (key.dataset.keyCode) {
           case 'Backspace':
             key.classList.add('active');
@@ -169,17 +193,23 @@ export default class Keyboard {
             key.classList.add('active');
             break;
           case 'ControlLeft':
-            if (this.properties.isAlt) {
+            this.properties.isCtrl = true;
+            if (this.properties.isAltLeft) {
+              this.$changeLanguage();
+            }
+            if (this.properties.isAltRight) {
               this.$changeLanguage();
             }
             break;
           case 'AltLeft':
-            if (this.properties.isCtrl) {
+            this.properties.isAltLeft = true;
+            if (this.properties.isCtrl && key.dataset.keyCode === 'AltLeft') {
               this.$changeLanguage();
             }
             break;
           case 'AltRight':
-            if (this.properties.isCtrl) {
+            this.properties.isAltRight = true;
+            if (this.properties.isCtrl && key.dataset.keyCode === 'AltRight') {
               this.$changeLanguage();
             }
             break;
@@ -206,13 +236,14 @@ export default class Keyboard {
       this.textarea.focus();
       const key = e.target.closest('.key');
       this.properties.isCtrl = false;
-      this.properties.isAlt = false;
+      this.properties.isAltLeft = false;
+      this.properties.isAltRight = false;
       if (key && (key.dataset.keyCode === 'ShiftLeft' || key.dataset.keyCode === 'ShiftRight')) {
         this.properties.isShift = false;
         this.$toggleShiftText(this.virtualKeys);
       }
       this.properties.audioStandartKey.pause();
-      this.properties.audioStandartKey.currentTime = 0;
+      this.properties.audioStandartKey.currentTime = 0.02;
     });
   }
 
@@ -229,6 +260,12 @@ export default class Keyboard {
     this.arrayKeys = this.storage.objLng[localStorage.getItem('language')];
     this.virtualKeyboard.remove();
     this.render();
+    if (this.properties.isAltLeft) {
+      document.querySelector('[data-key-code="AltLeft"]').classList.add('active');
+    } else if (this.properties.isAltRight) {
+      document.querySelector('[data-key-code="AltRight"]').classList.add('active');
+    }
+    document.querySelector('[data-key-code="ControlLeft"]').classList.add('active');
     this.$toggleCapsLockText(this.virtualKeys);
 
     return localStorage.getItem('language');
